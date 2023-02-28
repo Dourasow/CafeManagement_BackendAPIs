@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -33,15 +32,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-///user/signup
-        if (httpServletRequest.getServletPath().matches("/user/login| /user/forgotPassword| ")) {
+
+        if (httpServletRequest.getServletPath().matches("/user/login| /user/forgotPassword| /user/signup")) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         } else {
             String authorizationHeader = httpServletRequest.getHeader("Authorization");
-           // String token = null;
+          //  String token = null;
 
-//            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer "))
-//                token = authorizationHeader.substring(7);
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer "))
+                token = authorizationHeader.substring(7);
 //            userName = jwtUtils.extractUsername(token);
 //            claims = jwtUtils.extractAllClaims(token);
         }

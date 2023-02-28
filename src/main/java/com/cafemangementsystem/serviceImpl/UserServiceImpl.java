@@ -1,5 +1,7 @@
 package com.cafemangementsystem.serviceImpl;
 
+import com.cafemangementsystem.JWT.CustomerUserDetailsServices;
+import com.cafemangementsystem.JWT.JwtUtils;
 import com.cafemangementsystem.constants.CafeConstants;
 import com.cafemangementsystem.model.User;
 import com.cafemangementsystem.repository.UserRepository;
@@ -9,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -20,6 +25,16 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    CustomerUserDetailsServices customerUserDetailsServices;
+
+    @Autowired
+    JwtUtils jwtUtils;
+
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
         log.info("Inside Signup {}", requestMap);
@@ -65,4 +80,34 @@ public class UserServiceImpl implements UserService {
         user.setRole("user");
         return user;
     }
+
+    //for Login
+    @Override
+    public ResponseEntity<String> login(Map<String, String> requestMap) {
+        log.info("inside login");
+        try
+        {
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    requestMap.get("email"), requestMap.get("password")));
+            if(auth.isAuthenticated())
+            {
+                if(customerUserDetailsServices.getUserDetails().getStatus().equalsIgnoreCase("true"))
+                {
+                    return new ResponseEntity<String>("{\"token\":\"" + jwtUtils.generateToken(
+                            customerUserDetailsServices.getUserDetails().getEmail(), customerUserDetailsServices.getUserDetails().getRole())+ "\"}",
+                            HttpStatus.OK);
+                }else
+                {
+                    return new ResponseEntity<String>("{\"message\":\"" + "Wait for admin approval."+"\"}", HttpStatus.BAD_REQUEST);
+                }
+            }
+        }catch (Exception e)
+        {
+            log.error("{}", e);
+//            e.printStackTrace();
+        }
+        return new ResponseEntity<String>("{\"message\":\"" + "Wrong Credentials."+"\"}", HttpStatus.BAD_REQUEST);
+
+    }
+
 }

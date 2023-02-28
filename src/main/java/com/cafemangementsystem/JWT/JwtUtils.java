@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,7 +15,7 @@ import java.util.function.Function;
 public class JwtUtils {
 
     //Creating my secret key
-    private String secretKey = "AbdulSow";
+    private String secretKey = "Abdurahmanesowbambewelasoftwareengineeratuniversity";
 
     //Method to extract userName
     public String extractUsername(String token)
@@ -53,11 +52,12 @@ public class JwtUtils {
     {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+       // claims.put("userName", userName);
         return createToken(claims, userName);
     }
 
     //Method to create the token
-    private String createToken(Map<String , Object> claims, String subject)
+    private String createToken(Map<String, Object> claims, String subject)
     {
         return Jwts.builder()
                 .setClaims(claims)
@@ -65,6 +65,7 @@ public class JwtUtils {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256, secretKey).compact();
+                //.signWith(SignatureAlgorithm.HS256, secretKey).compact();
     }
 
     //Method to Validate the token

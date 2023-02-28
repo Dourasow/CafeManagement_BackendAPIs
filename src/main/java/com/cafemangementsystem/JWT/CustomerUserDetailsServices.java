@@ -3,7 +3,6 @@ package com.cafemangementsystem.JWT;
 import com.cafemangementsystem.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,7 +26,7 @@ public class CustomerUserDetailsServices implements UserDetailsService {
         log.info("Inside LoadUserByUsername {}", username);
         userDetails = userRepository.findByEmailId(username);
         if(!Objects.isNull(userDetails))
-            return new User(userDetails.getEmail(), userDetails.getPassword(), new ArrayList<>());
+        return new User(userDetails.getEmail(), userDetails.getPassword(), new ArrayList<>());
         else
             throw  new UsernameNotFoundException("User Not Found");
     }
@@ -36,4 +35,5 @@ public class CustomerUserDetailsServices implements UserDetailsService {
     {
         return userDetails;
     }
+
 }

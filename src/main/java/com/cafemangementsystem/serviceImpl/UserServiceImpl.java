@@ -1,12 +1,14 @@
 package com.cafemangementsystem.serviceImpl;
 
 import com.cafemangementsystem.JWT.CustomerUserDetailsServices;
+import com.cafemangementsystem.JWT.JwtFilter;
 import com.cafemangementsystem.JWT.JwtUtils;
 import com.cafemangementsystem.constants.CafeConstants;
 import com.cafemangementsystem.model.User;
 import com.cafemangementsystem.repository.UserRepository;
 import com.cafemangementsystem.service.UserService;
 import com.cafemangementsystem.utils.CafeUtils;
+import com.cafemangementsystem.wrapper.UserWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    JwtFilter jwtFilter;
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -108,6 +115,25 @@ public class UserServiceImpl implements UserService {
         }
         return new ResponseEntity<String>("{\"message\":\"" + "Wrong Credentials."+"\"}", HttpStatus.BAD_REQUEST);
 
+    }
+
+    //Implementing the GetAllUsers Method
+    @Override
+    public ResponseEntity<List<UserWrapper>> getAllUsers() {
+        try
+        {
+            if(jwtFilter.isAdmin())
+            {
+                return new ResponseEntity<>(userRepository.getAllUsers(), HttpStatus.OK);
+            }else
+            {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

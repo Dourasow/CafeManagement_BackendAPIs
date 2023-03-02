@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.io.Serializable;
 
 @NamedQuery(name = "User.findByEmailId", query = "select u from User u where u.email=:email ")
+@NamedQuery(name = "User.getAllUsers" , query = "select new com.cafemangementsystem.wrapper.UserWrapper(u.id, u.name, u.contactNumber, u.email, u.status) from User u where u.role='user'")
 
 @Data
 @Entity

@@ -1,11 +1,14 @@
 package com.cafemangementsystem.serviceImpl;
 
-import com.cafemangementsystem.JWT.CustomerUserDetailsServices;
-import com.cafemangementsystem.JWT.JwtFilter;
-import com.cafemangementsystem.JWT.JwtUtils;
+//import com.cafemangementsystem.JWT.CustomerUserDetailsServices;
+//import com.cafemangementsystem.JWT.JwtFilter;
+//import com.cafemangementsystem.JWT.JwtUtils;
 import com.cafemangementsystem.constants.CafeConstants;
 import com.cafemangementsystem.model.User;
+import com.cafemangementsystem.repository.RoleRepository;
 import com.cafemangementsystem.repository.UserRepository;
+import com.cafemangementsystem.security.CustomDetailsServices;
+import com.cafemangementsystem.security.JwtGenerator;
 import com.cafemangementsystem.service.UserService;
 import com.cafemangementsystem.utils.CafeUtils;
 import com.cafemangementsystem.wrapper.UserWrapper;
@@ -16,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,20 +31,39 @@ import java.util.Objects;
 @Service
 public class UserServiceImpl implements UserService {
 
+//    @Autowired
+//    private UserRepository userRepository;
+//
+//    @Autowired
+//    AuthenticationManager authenticationManager;
+//
+//    @Autowired
+//    CustomeDetailsServices customerUserDetailsServices;
+//
+//    @Autowired
+//    JwtUtils jwtUtils;
+//
+//    @Autowired
+//    JwtFilter jwtFilter;
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private RoleRepository roleRepository;
 
     @Autowired
-    CustomerUserDetailsServices customerUserDetailsServices;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    JwtUtils jwtUtils;
+    private PasswordEncoder passwordEncoder;
+
 
     @Autowired
-    JwtFilter jwtFilter;
+    private JwtGenerator jwtGenerator;
+
+    @Autowired
+    private CustomDetailsServices customDetailsServices;
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -98,11 +121,13 @@ public class UserServiceImpl implements UserService {
                     requestMap.get("email"), requestMap.get("password")));
             if(auth.isAuthenticated())
             {
-                if(customerUserDetailsServices.getUserDetails().getStatus().equalsIgnoreCase("true"))
+                if(customDetailsServices.getUserDetails().getStatus().equalsIgnoreCase("true"))
                 {
-                    return new ResponseEntity<String>("{\"token\":\"" + jwtUtils.generateToken(
-                            customerUserDetailsServices.getUserDetails().getEmail(), customerUserDetailsServices.getUserDetails().getRole())+ "\"}",
-                            HttpStatus.OK);
+//                    return new ResponseEntity<String>("{\"token\":\"" + jwtGenerator.generateToken(
+//                            customDetailsServices.getUserDetails().getEmail(), customDetailsServices.getUserDetails().getRole())+ "\"}",
+//                    HttpStatus.OK);
+//                            customDetailsServices.getUserDetails().getEmail(), customDetailsServices.getUserDetails().getRole())+ "\"}",
+//                            HttpStatus.OK);
                 }else
                 {
                     return new ResponseEntity<String>("{\"message\":\"" + "Wait for admin approval."+"\"}", HttpStatus.BAD_REQUEST);
@@ -110,30 +135,30 @@ public class UserServiceImpl implements UserService {
             }
         }catch (Exception e)
         {
-            log.error("{}", e);
-//            e.printStackTrace();
+//            log.error("{}", e);
+            e.printStackTrace();
         }
         return new ResponseEntity<String>("{\"message\":\"" + "Wrong Credentials."+"\"}", HttpStatus.BAD_REQUEST);
 
     }
 
     //Implementing the GetAllUsers Method
-    @Override
-    public ResponseEntity<List<UserWrapper>> getAllUsers() {
-        try
-        {
-            if(jwtFilter.isAdmin())
-            {
-                return new ResponseEntity<>(userRepository.getAllUsers(), HttpStatus.OK);
-            }else
-            {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
-            }
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @Override
+//    public ResponseEntity<List<UserWrapper>> getAllUsers() {
+//        try
+//        {
+//            if(jwtFilter.isAdmin())
+//            {
+//                return new ResponseEntity<>(userRepository.getAllUsers(), HttpStatus.OK);
+//            }else
+//            {
+//                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+//            }
+//        }catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
 }

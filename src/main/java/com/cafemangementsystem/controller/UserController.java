@@ -19,6 +19,6 @@ public interface UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody(required = true) Map<String, String> requestMap);
 
-    @GetMapping("/get")
-    public ResponseEntity<List<UserWrapper>> getAllUsers();
+//    @GetMapping("/get")
+//    public ResponseEntity<List<UserWrapper>> getAllUsers();
 }

@@ -44,15 +44,15 @@ public class UserControllerImpl implements UserController {
         return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @Override
-    public ResponseEntity<List<UserWrapper>> getAllUsers() {
-        try
-        {
-            return userService.getAllUsers();
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return new ResponseEntity<List<UserWrapper>> (new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @Override
+//    public ResponseEntity<List<UserWrapper>> getAllUsers() {
+//        try
+//        {
+//            return userService.getAllUsers();
+//        }catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        return new ResponseEntity<List<UserWrapper>> (new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }
